@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	exec(initBalacne())
+	exec(initBalance())
 
 }
 
@@ -39,7 +39,7 @@ func exec(accountBalance float64) {
 	}
 }
 
-func initBalacne() float64 {
+func initBalance() float64 {
 	var startbalance string
 	fmt.Print("Init start balance: ")
 	fmt.Scan(&startbalance)
@@ -49,7 +49,7 @@ func initBalacne() float64 {
 	f, err := strconv.ParseFloat(startbalance, 64)
 	if err != nil {
 		fmt.Println("Not valid balance. Try again or type Exit!")
-		initBalacne()
+		initBalance()
 	}
 	return f
 }
