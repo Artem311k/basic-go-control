@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -98,7 +99,6 @@ func initAmount() float64 {
 		parsedAmount, err = strconv.ParseFloat(amount, 64)
 	}
 	return parsedAmount
-
 }
 
 func initChoice() int {
@@ -140,4 +140,8 @@ func printUserChoice(choice int) {
 	default:
 		printChoice("something is wrong...")
 	}
+}
+
+func readAccountAmount(path string) {
+	os.Open("account.json")
 }
