@@ -1,19 +1,22 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"os"
 	"strconv"
 )
 
 func main() {
 
-	exec(initBalance())
+	exec("account.json")
 
 }
 
-func exec(accountBalance float64) {
-
+func exec(fileName string) {
+	accountBalance := initBalance(fileName)
 	var isContinue bool = true
 
 	printWelcome()
@@ -32,7 +35,7 @@ func exec(accountBalance float64) {
 			showBalance(accountBalance)
 		} else if choice == 4 {
 			isContinue = false
-			exit()
+			exit(fileName, accountBalance)
 			return
 		} else {
 			fmt.Println("Not valid choice! Try again!")
@@ -40,22 +43,35 @@ func exec(accountBalance float64) {
 	}
 }
 
-func initBalance() float64 {
+func initBalance(fileNameFile string) float64 {
+	if fileNameFile != "" {
+		return readAccountAmount(fileNameFile)
+	}
 	var startbalance string
 	fmt.Print("Init start balance: ")
 	fmt.Scan(&startbalance)
 	if startbalance == "Exit" {
-		exit()
+		exit(fileNameFile, 0)
 	}
 	f, err := strconv.ParseFloat(startbalance, 64)
 	if err != nil {
 		fmt.Println("Not valid balance. Try again or type Exit!")
-		initBalance()
+		initBalance(fileNameFile)
 	}
 	return f
 }
 
-func exit() {
+func exit(fileName string, balance float64) {
+	if fileName != "" {
+		var accountInfo AccountInfo
+		accountInfo.AccountAmount = balance
+		content, _ := json.Marshal(accountInfo)
+		err := os.WriteFile("account.json", content, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
 	fmt.Println("Goodbye!")
 }
 
@@ -142,6 +158,25 @@ func printUserChoice(choice int) {
 	}
 }
 
-func readAccountAmount(path string) {
-	os.Open("account.json")
+func readAccountAmount(fileNme string) float64 {
+	file, err := os.Open(fileNme)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Opened ", file.Name())
+
+	byteValue, _ := io.ReadAll(file)
+
+	var accountInfo AccountInfo
+
+	json.Unmarshal(byteValue, &accountInfo)
+
+	defer file.Close()
+
+	return accountInfo.AccountAmount
+}
+
+type AccountInfo struct {
+	AccountAmount float64
 }
