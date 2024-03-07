@@ -64,9 +64,7 @@ func showBalance(balance float64) {
 }
 
 func processBalanceOperation(balance float64, choice int) float64 {
-	fmt.Print("Enter money value to proceed: ")
-	var money float64
-	fmt.Scan(&money)
+	money := initAmount()
 
 	switch choice {
 	case 2:
@@ -85,6 +83,18 @@ func processBalanceOperation(balance float64, choice int) float64 {
 	}
 	fmt.Println("Current balance is ", balance)
 	return balance
+}
+
+func initAmount() float64 {
+	var amount string
+	fmt.Print("Enter amount to proceed: ")
+	fmt.Scan(&amount)
+	f, err := strconv.ParseFloat(amount, 64)
+	if err != nil && f > 0 {
+		fmt.Println("Not valid amount. Try again or type Exit!")
+		initAmount()
+	}
+	return f
 }
 
 func initChoice() int {
