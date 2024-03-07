@@ -127,7 +127,3 @@ func printUserChoice(choice int) {
 		printChoice("something is wrong...")
 	}
 }
-
-func debugBalance(balance float64) {
-	fmt.Println("------Debug balane is ", balance, "-----------")
-}
