@@ -2,11 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 )
 
 func main() {
 
-	var accountBalance = 15000.0
+	exec(initBalacne())
+
+}
+
+func exec(accountBalance float64) {
 
 	var isContinue bool = true
 
@@ -31,11 +37,26 @@ func main() {
 			fmt.Println("Not valid choice! Try again!")
 		}
 	}
+}
 
+func initBalacne() float64 {
+	var startbalance string
+	fmt.Print("Init start balance: ")
+	fmt.Scan(&startbalance)
+	if startbalance == "Exit" {
+		exit()
+	}
+	f, err := strconv.ParseFloat(startbalance, 64)
+	if err != nil {
+		fmt.Println("Not valid balance. Try again or type Exit!")
+		initBalacne()
+	}
+	return f
 }
 
 func exit() {
 	fmt.Println("Goodbye!")
+	os.Exit(3)
 }
 
 func showBalance(balance float64) {
@@ -109,5 +130,4 @@ func printUserChoice(choice int) {
 
 func debugBalance(balance float64) {
 	fmt.Println("------Debug balane is ", balance, "-----------")
-
 }
