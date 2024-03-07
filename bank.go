@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 )
 
@@ -33,6 +32,7 @@ func exec(accountBalance float64) {
 		} else if choice == 4 {
 			isContinue = false
 			exit()
+			return
 		} else {
 			fmt.Println("Not valid choice! Try again!")
 		}
@@ -56,7 +56,6 @@ func initBalance() float64 {
 
 func exit() {
 	fmt.Println("Goodbye!")
-	os.Exit(3)
 }
 
 func showBalance(balance float64) {
@@ -87,14 +86,19 @@ func processBalanceOperation(balance float64, choice int) float64 {
 
 func initAmount() float64 {
 	var amount string
+	var parsedAmount float64
 	fmt.Print("Enter amount to proceed: ")
 	fmt.Scan(&amount)
-	f, err := strconv.ParseFloat(amount, 64)
-	if err != nil && f > 0 {
-		fmt.Println("Not valid amount. Try again or type Exit!")
-		initAmount()
+	var err error
+	parsedAmount, err = strconv.ParseFloat(amount, 64)
+	for parsedAmount < 0 || err != nil {
+		fmt.Println("Invalid amount! Try again!")
+		fmt.Print("Enter amount to proceed: ")
+		fmt.Scan(&amount)
+		parsedAmount, err = strconv.ParseFloat(amount, 64)
 	}
-	return f
+	return parsedAmount
+
 }
 
 func initChoice() int {
