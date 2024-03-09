@@ -43,9 +43,22 @@ func exec(fileName string) {
 	}
 }
 
+func writeBalanceTofile(fileName string, balance float64) {
+	if fileName != "" {
+		var accountInfo AccountInfo
+		accountInfo.AccountAmount = balance
+		content, _ := json.Marshal(accountInfo)
+		err := os.WriteFile("account.json", content, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
+}
+
 func initBalance(fileNameFile string) float64 {
 	if fileNameFile != "" {
-		return readAccountAmount(fileNameFile)
+		return readBalanceFromFile(fileNameFile)
 	}
 	var startbalance string
 	fmt.Print("Init start balance: ")
@@ -62,16 +75,7 @@ func initBalance(fileNameFile string) float64 {
 }
 
 func exit(fileName string, balance float64) {
-	if fileName != "" {
-		var accountInfo AccountInfo
-		accountInfo.AccountAmount = balance
-		content, _ := json.Marshal(accountInfo)
-		err := os.WriteFile("account.json", content, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-	}
+	writeBalanceTofile(fileName, balance)
 	fmt.Println("Goodbye!")
 }
 
@@ -158,7 +162,11 @@ func printUserChoice(choice int) {
 	}
 }
 
-func readAccountAmount(fileNme string) float64 {
+func readBalanceFromFile(fileNme string) float64 {
+	if _, err := os.Stat("account.json"); err != nil {
+		writeBalanceTofile(fileNme, 0)
+	}
+
 	file, err := os.Open(fileNme)
 
 	if err != nil {
